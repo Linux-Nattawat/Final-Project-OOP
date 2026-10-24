@@ -2,7 +2,6 @@ import java.awt.*;
 import javax.swing.*;
 
 public class Lobby extends JFrame {
-
     private int players = 2; 
 
     public Lobby() {
@@ -11,7 +10,7 @@ public class Lobby extends JFrame {
         setSize(1000, 800);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // จัดหน้าต่างให้อยู่กึ่งกลางจอ
+        setLocationRelativeTo(null); 
 
         //จำนวน
         JLabel playerCountLabel = new JLabel("Player : " + players + " คน");
@@ -29,7 +28,6 @@ public class Lobby extends JFrame {
         JTextArea playerListArea = new JTextArea("Poori\nMokk\n");
         playerListArea.setFont(new Font("Tahoma", Font.PLAIN, 24));
         playerListArea.setEditable(false);
-        // เพิ่มระยะห่างจากขอบภายใน (บน: 15, ซ้าย: 20, ล่าง: 15, ขวา: 20)
         playerListArea.setMargin(new Insets(15, 20, 15, 20));
 
         JScrollPane scrollPane = new JScrollPane(playerListArea);
