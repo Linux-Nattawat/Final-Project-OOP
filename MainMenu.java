@@ -1,14 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class MainMenu extends JFrame {
+public class MainMenu extends JPanel {
     private MainFrame mainFrame;
 
     MainMenu(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        setTitle("Main Menu");
-        setSize(1000, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         setLayout(new BorderLayout());
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -71,13 +69,15 @@ public class MainMenu extends JFrame {
         joinButton.addActionListener(e -> {
         String name = nameField.getText();
         String ip = ipField.getText();
-
+        if (name.isEmpty() || ip.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter both name and IP address.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         });
 
         createButton.addActionListener(e -> {
             
+            mainFrame.switchScreen(new Lobby(mainFrame));
         });
-
-
     }
 }

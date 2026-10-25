@@ -9,7 +9,7 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
-        switchScreen(new MainMenu(this));
+        switchScreen(new Leaderboard(this));
     }
 
     public void switchScreen(JPanel newScreen) {

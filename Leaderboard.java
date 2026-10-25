@@ -1,22 +1,22 @@
 import java.awt.*;
 import javax.swing.*;
 import java.util.ArrayList;
-public class Leaderboard extends JFrame {
-    //private MainFrame mainFrame;
+public class Leaderboard extends JPanel {
+    private MainFrame mainFrame;
     private ArrayList<Player> players;
     private JLabel titleLabel;
     private JPanel rankPanel;
     private JButton restartButton;
     private JButton mainMenuButton;
         
-    public Leaderboard(ArrayList<Player> players){
-        this.players = players;
-       // this.mainFrame = mainFrame ;
+    public Leaderboard(MainFrame mainFrame) {
 
-        setTitle("LeaderBoard");
-        setSize(1000,800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+       this.mainFrame = mainFrame ;
+
+        // setTitle("LeaderBoard");
+        // setSize(1000,800);
+        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // setLocationRelativeTo(null);
         setLayout(new BorderLayout ());
         // หัวข้อ
         titleLabel = new JLabel("Leaderboard", SwingConstants.CENTER);
@@ -49,8 +49,7 @@ public class Leaderboard extends JFrame {
                 }
             }
         }
-
-                rankPanel.removeAll();   // ล้างของเก่าก่อน
+        rankPanel.removeAll();   
         rankPanel.setLayout(new GridLayout(10, 1));
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);

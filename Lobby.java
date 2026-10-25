@@ -1,16 +1,18 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class Lobby extends JFrame {
+public class Lobby extends JPanel {
     private int players = 2; 
+    private MainFrame mainFrame;
+    
+    public Lobby(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
 
-    public Lobby() {
-        
-        setTitle("Word Running - Lobby");
-        setSize(1000, 800);
+        // setTitle("Word Running - Lobby");
+        // setSize(1000, 800);
         setLayout(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); 
+        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // setLocationRelativeTo(null); 
 
         //จำนวน
         JLabel playerCountLabel = new JLabel("Player : " + players + " คน");
@@ -40,11 +42,9 @@ public class Lobby extends JFrame {
         startBtn.setFont(new Font("Tahoma", Font.BOLD, 22));
         startBtn.setBounds(420, 640, 160, 50);
         add(startBtn);
-
-        setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Lobby());
-    }
+    // public static void main(String[] args) {
+    //     SwingUtilities.invokeLater(() -> new Lobby(new MainFrame()));
+    // }
 }
