@@ -1,29 +1,70 @@
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
+import javax.swing.*;
 
-public class NetworkManager {
+public class NetworkManager implements Runnable {
+    private Socket socket;
+    private BufferedReader in;
+    private PrintWriter out;
+    private MainFrame mainFrame;
 
-    final int PORT = 12345;
+    public NetworkManager(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
+    }
 
-    NetworkManager() {
-         try {
-            Scanner scanner = new Scanner(System.in);
-            Socket socket = new Socket("localhost", PORT);
-            PrintStream out = new PrintStream(socket.getOutputStream());
+    public boolean connect(String ip, int port, String playerName) {
+        try {
+            socket = new Socket(ip, port);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
 
-            InetAddress myAddr = InetAddress.getLocalHost();
-            while (true){
-                System.out.print("Input Text : ");
-                String text = scanner.nextLine();
-                
-                String msg = myAddr.getHostName() + " # " + text;
-                out.println(msg);
-                Thread.sleep(500); // Wait for 1 second before sending the next message  
-            }
+            sendMessage("JOIN|" + playerName);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            new Thread(this).start();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
+    }
+
+    @Override
+    public void run() {
+        try {
+            String message;
+            while ((message = in.readLine()) != null) {
+                String[] parts = message.split("\\|");
+                String command = parts[0];
+
+                if (command.equals("START")) {
+                    String[] words = parts[1].split(",");
+                    mainFrame.startGame(words);
+
+                } else if (command.equals("SCORE_UPDATE")) {
+                    String scoreData = parts[1];
+                    mainFrame.updateScore(scoreData);
+
+                } else if (command.equals("LOBBY")) {
+                    String[] players = parts[1].split(",");
+
+                    SwingUtilities.invokeLater(() -> {
+                        mainFrame.updateLobby(players);
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println("Disconnected from server.");
+        }
+    }
+
+    public void sendMessage(String msg) {
+        if (out != null) {
+            out.println(msg);
+        }
+    }
+
+    public void sendAnswer(int timeLeft) {
+        sendMessage("ANSWER|" + timeLeft);
     }
 }
