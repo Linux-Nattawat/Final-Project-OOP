@@ -6,7 +6,8 @@ import java.util.ArrayList;
 public class GameServer {
     private final int PORT = 12345;
     private CopyOnWriteArrayList<ClientHandler> clients = new CopyOnWriteArrayList<>();
-    private String gameState = "LOBBY"; // LOBBY, PLAYING, ENDED
+    private String gameState = "LOBBY";
+    private ServerSocket serverSocket;
 
     public GameServer() {
         startServerThread();
@@ -15,15 +16,18 @@ public class GameServer {
     private void startServerThread() {
         new Thread(() -> {
             try {
-                ServerSocket serverSocket = new ServerSocket(PORT);
+                serverSocket = new ServerSocket();
+                serverSocket.setReuseAddress(true);
+                serverSocket.bind(new InetSocketAddress(PORT));
+
                 System.out.println("Server started on port :" + PORT);
 
-                while (true) {
+                while (!serverSocket.isClosed()) {
                     Socket socket = serverSocket.accept();
 
                     if (gameState.equals("PLAYING")) {
                         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                        out.println("ERROR|Game already started");
+                        out.println("ERROR|Game is started");
                         socket.close();
                         continue;
                     }
@@ -33,9 +37,27 @@ public class GameServer {
                     new Thread(handler).start();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                if (serverSocket != null && serverSocket.isClosed())
+                    System.out.println("Server stopped");
+                else
+                    e.printStackTrace();
             }
         }).start();
+    }
+
+    public void stopServer() {
+        try {
+            for (ClientHandler client : clients) {
+                client.closeConnection();
+            }
+            clients.clear();
+
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void broadcast(String message) {
@@ -46,9 +68,9 @@ public class GameServer {
 
     public void startGame() {
         gameState = "PLAYING";
-        
+
         ArrayList<Word> words = WordManager.getRandomGameWords();
-        
+
         StringBuilder sb = new StringBuilder("START|");
         for (int i = 0; i < words.size(); i++) {
             sb.append(words.get(i).getText());
@@ -62,7 +84,7 @@ public class GameServer {
 
     public void updateAndBroadcastScores() {
         StringBuilder sb = new StringBuilder("SCORE_UPDATE|");
-        
+
         for (int i = 0; i < clients.size(); i++) {
             Player p = clients.get(i).getPlayer();
             if (p != null) {
@@ -79,7 +101,7 @@ public class GameServer {
     public void broadcastLobby() {
         StringBuilder sb = new StringBuilder("LOBBY|");
         boolean first = true;
-        
+
         for (ClientHandler client : clients) {
             Player p = client.getPlayer();
             if (p != null) {
@@ -92,4 +114,5 @@ public class GameServer {
         }
         broadcast(sb.toString());
     }
+
 }

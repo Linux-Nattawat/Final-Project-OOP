@@ -8,10 +8,8 @@ public class Leaderboard extends JPanel implements ActionListener {
     private ArrayList<Player> players;
     private JLabel titleLabel;
     private JPanel rankPanel;
-    private JButton restartButton;
     private JButton mainMenuButton;
     private Image bgImage;
-
 
     public Leaderboard(MainFrame mainFrame, String scoreData) {
         this.mainFrame = mainFrame;
@@ -20,49 +18,30 @@ public class Leaderboard extends JPanel implements ActionListener {
         try {
             bgImage = new ImageIcon(getClass().getResource("/img/Leaderboard_Background.jpg")).getImage();
         } catch (Exception e) {
-            System.out.println("Could not load Background.png, using fallback gradient.");
-        }
-
-
-        if (scoreData != null && !scoreData.isEmpty()) {
-            String[] parts = scoreData.split(",");
-            for (String part : parts) {
-                String[] info = part.split(":");
-                if (info.length == 2) {
-                    Player p = new Player(info[0]);
-                    p.addScore(Integer.parseInt(info[1]));
-                    players.add(p);
-                }
-            }
+            System.out.println("cannot load Background.png, use basic");
         }
 
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(30, 40, 40, 40));
+        setBorder(BorderFactory.createEmptyBorder(100, 110, 110, 110));
 
-        // หัวข้อ
-        titleLabel = new JLabel("Leaderboard", SwingConstants.CENTER);
+        titleLabel = new JLabel("Leaderboard",JLabel.CENTER);
+        titleLabel.setOpaque(true);
         titleLabel.setFont(new Font("Monospaced", Font.BOLD, 28));
         add(titleLabel, BorderLayout.NORTH);
 
-        // กล่องอันดับ
         rankPanel = new JPanel();
         add(rankPanel, BorderLayout.CENTER);
 
-        // ปุ่ม
         JPanel bottom = new JPanel();
-        restartButton = new JButton("Restart");
         mainMenuButton = new JButton("Main Menu");
-        bottom.add(restartButton);
         bottom.add(mainMenuButton);
         add(bottom, BorderLayout.SOUTH);
-        restartButton.addActionListener(e -> {
-            mainFrame.switchScreen(new MainMenu(mainFrame));
-        });
         mainMenuButton.addActionListener(e -> {
+            mainFrame.resetToMainMenu();
             mainFrame.switchScreen(new MainMenu(mainFrame));
         });
 
-        showRanking();
+        updateScores(scoreData);
         setVisible(true);
 
     }
@@ -87,13 +66,34 @@ public class Leaderboard extends JPanel implements ActionListener {
             label.setFont(new Font("Monospaced", Font.PLAIN, 28));
             rankPanel.add(label);
         }
+        rankPanel.revalidate();
+        rankPanel.repaint();
+    }
+
+    public void updateScores(String scoreData) {
+        if (scoreData == null || scoreData.isEmpty())
+            return;
+        players.clear();
+
+        String[] parts = scoreData.split(",");
+        for (String part : parts) {
+            String[] info = part.split(":");
+            if (info.length == 2) {
+                Player p = new Player(info[0]);
+                p.setScore(Integer.parseInt(info[1]));
+                players.add(p);
+            }
+        }
+        showRanking();
+        revalidate();
+        repaint();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+        throw new UnsupportedOperationException("");
     }
-    
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -101,7 +101,8 @@ public class Leaderboard extends JPanel implements ActionListener {
             g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
         } else {
             Graphics2D g2d = (Graphics2D) g;
-            GradientPaint gp = new GradientPaint(0, 0, new Color(200, 220, 240), 0, getHeight(), new Color(150, 180, 220));
+            GradientPaint gp = new GradientPaint(0, 0, new Color(200, 220, 240), 0, getHeight(),
+                    new Color(150, 180, 220));
             g2d.setPaint(gp);
             g2d.fillRect(0, 0, getWidth(), getHeight());
         }

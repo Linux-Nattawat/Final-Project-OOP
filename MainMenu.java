@@ -1,5 +1,6 @@
 import java.awt.*;
 import javax.swing.*;
+import java.net.*;
 
 public class MainMenu extends JPanel {
     private MainFrame mainFrame;
@@ -11,7 +12,7 @@ public class MainMenu extends JPanel {
         try {
             bgImage = new ImageIcon(getClass().getResource("/img/MainMenu_Background.jpg")).getImage();
         } catch (Exception e) {
-            System.out.println("Could not load Background.png, using fallback gradient.");
+            System.out.println("cannot load Background.png, use basic");
         }
 
         setLayout(new BorderLayout());
@@ -25,10 +26,6 @@ public class MainMenu extends JPanel {
         JPanel box = new JPanel(new BorderLayout());
         box.setOpaque(false);
         panel.add(box, BorderLayout.CENTER);
-
-        // JLabel word = new JLabel("Word Running!", SwingConstants.CENTER);
-        // word.setFont(new Font("Arial", Font.BOLD, 36));
-        // box.add(word, BorderLayout.NORTH);
 
         JPanel form = new JPanel(new GridLayout(2, 2, 10, 10));
         form.setOpaque(false);
@@ -79,30 +76,56 @@ public class MainMenu extends JPanel {
         box.add(middle, BorderLayout.CENTER);
 
         joinButton.addActionListener(e -> {
-            String name = nameField.getText();
-            String ip = ipField.getText();
+            String name = nameField.getText().trim();
+            String ip = ipField.getText().trim();
 
-            Lobby lobby = new Lobby(mainFrame);
-            mainFrame.switchScreen(lobby);
+            if (name.isEmpty() || ip.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter name and IP address", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            SwingUtilities.invokeLater(() -> {
-                mainFrame.getNetworkManager().connect(ip, 12345, name);
-            });
+            boolean connected = mainFrame.getNetworkManager().connect(ip, 12345, name);
+
+            if (connected) {
+                mainFrame.setCurrentServerIp(ip);
+                mainFrame.switchScreen(new Lobby(mainFrame, ip));
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Cannot connect to server",
+                        "Connection Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         createButton.addActionListener(e -> {
             String name = nameField.getText().trim();
             if (name.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please enter your name.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Please enter your name", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            new GameServer();
-            boolean connected = mainFrame.getNetworkManager().connect("127.0.0.1", 12345, name);
-            if (connected) {
-                mainFrame.switchScreen(new Lobby(mainFrame));
+            mainFrame.resetToMainMenu();
+
+            GameServer gameServer = new GameServer();
+            mainFrame.setGameServer(gameServer);
+
+            String ip = "127.0.0.1";
+            try {
+                String address = InetAddress.getLocalHost().getHostAddress();
+                ip = address;
+            } catch (Exception ex) {
+                System.out.println("cannot get local IP, use 127.0.0.1");
             }
 
+            mainFrame.setCurrentServerIp(ip);
+            boolean connected = mainFrame.getNetworkManager().connect("127.0.0.1", 12345, name);
+            if (connected) {
+                mainFrame.switchScreen(new Lobby(mainFrame, ip));
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to start server", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         });
     }
 

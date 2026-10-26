@@ -23,7 +23,6 @@ public class NetworkManager implements Runnable {
             new Thread(this).start();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -42,7 +41,9 @@ public class NetworkManager implements Runnable {
 
                 } else if (command.equals("SCORE_UPDATE")) {
                     String scoreData = parts[1];
-                    mainFrame.updateScore(scoreData);
+                    SwingUtilities.invokeLater(() -> {
+                        mainFrame.updateScore(scoreData);
+                    });
 
                 } else if (command.equals("LOBBY")) {
                     String[] players = parts[1].split(",");
@@ -66,5 +67,20 @@ public class NetworkManager implements Runnable {
 
     public void sendAnswer(int timeLeft) {
         sendMessage("ANSWER|" + timeLeft);
+    }
+
+    public void disconnect() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+            if (in != null)
+                in.close();
+            if (out != null)
+                out.close();
+        } catch (Exception e) {
+            System.out.println("Error disconnecting: " + e.getMessage());
+        }
+
     }
 }

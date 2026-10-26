@@ -2,10 +2,11 @@ import java.awt.*;
 import javax.swing.*;
 
 public class MainFrame extends JFrame {
-
+    private String serverIp = "127.0.0.1";
     private NetworkManager networkManager;
     private GamePanel currentPanel;
     private JPanel currentScreen;
+    private GameServer gameServer;
 
     public MainFrame() {
         setTitle("Word Running");
@@ -26,10 +27,6 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
-    public void switchToLobby() {
-        switchScreen(new Lobby(this));
-    }
-
     public void startGame(String[] words) {
         SwingUtilities.invokeLater(() -> {
             this.currentPanel = new GamePanel(this, words);
@@ -38,11 +35,14 @@ public class MainFrame extends JFrame {
     }
 
     public void updateScore(String scoreData) {
-        SwingUtilities.invokeLater(() -> {
-            if (currentPanel != null) {
-                currentPanel.updateLeaderboard(scoreData);
-            }
-        });
+        if (currentScreen instanceof GamePanel) {
+            GamePanel game = (GamePanel) currentScreen;
+            game.updateLeaderboard(scoreData);
+        }
+        if (currentScreen instanceof Leaderboard) {
+            Leaderboard board = (Leaderboard) currentScreen;
+            board.updateScores(scoreData);
+        }
     }
 
     public void updateLobby(String[] players) {
@@ -56,6 +56,25 @@ public class MainFrame extends JFrame {
             System.out.println("อัปเดตแล้ว");
         }
 
+    }
+
+    public void resetToMainMenu() {
+        if (networkManager != null) {
+            networkManager.disconnect();
+        }
+        if (gameServer != null) {
+            gameServer.stopServer();
+            gameServer = null;
+        }
+        switchScreen(new MainMenu(this));
+    }
+
+    public void setGameServer(GameServer gameServer){
+        this.gameServer = gameServer;
+    }
+
+    public void setCurrentServerIp(String ip) {
+        this.serverIp = ip;
     }
 
     public NetworkManager getNetworkManager() {

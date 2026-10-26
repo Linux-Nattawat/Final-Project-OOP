@@ -21,11 +21,15 @@ public class Player {
         return indexWord;
     }
 
-    public void addScore(int timeLeft){
+    public void addScore(int timeLeft) {
         score = score + (timeLeft * 10);
     }
 
-    public void nextWord(){
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void nextWord() {
         indexWord++;
     }
 

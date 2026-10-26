@@ -19,7 +19,7 @@ public class ClientHandler implements Runnable {
             out = new PrintWriter(socket.getOutputStream(), true);
             String message;
             while ((message = in.readLine()) != null) {
-                
+
                 String[] parts = message.split("\\|");
                 String command = parts[0];
 
@@ -27,13 +27,11 @@ public class ClientHandler implements Runnable {
                     String name = parts[1];
                     this.player = new Player(name);
                     gameServer.broadcastLobby();
-                } 
-                else if (command.equals("START_GAME")) {
+                } else if (command.equals("START_GAME")) {
                     gameServer.startGame();
-                }
-                else if (command.equals("ANSWER")) {
+                } else if (command.equals("ANSWER")) {
                     if (player != null) {
-                        int timeLeft = Integer.parseInt(parts[1]); 
+                        int timeLeft = Integer.parseInt(parts[1]);
                         player.addScore(timeLeft);
                         player.nextWord();
                         gameServer.updateAndBroadcastScores();
@@ -42,6 +40,15 @@ public class ClientHandler implements Runnable {
             }
         } catch (Exception e) {
             System.out.println("Player disconnected: " + player.getName());
+        }
+    }
+
+    public void closeConnection() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
         }
     }
 

@@ -8,13 +8,13 @@ public class Lobby extends JPanel {
     private JTextArea playerListArea;
     private Image bgImage;
 
-    public Lobby(MainFrame mainFrame) {
+    public Lobby(MainFrame mainFrame,String serverIp) {
         this.mainFrame = mainFrame;
 
         try {
             bgImage = new ImageIcon(getClass().getResource("/img/Lobby_Background.jpg")).getImage();
         } catch (Exception e) {
-            System.out.println("Could not load Lobby background.");
+            System.out.println("cannot load Background.png, use basic");
         }
 
         setLayout(new BorderLayout(20, 20));
@@ -27,7 +27,7 @@ public class Lobby extends JPanel {
         playerCountLabel = new JLabel("Player : 1 คน");
         playerCountLabel.setFont(new Font("Tahoma", Font.BOLD, 22));
 
-        ipLabel = new JLabel("Waiting for players...", SwingConstants.RIGHT);
+        ipLabel = new JLabel("IP :"+ serverIp, SwingConstants.RIGHT);
         ipLabel.setFont(new Font("Tahoma", Font.BOLD, 22));
 
         topPanel.add(playerCountLabel, BorderLayout.WEST);

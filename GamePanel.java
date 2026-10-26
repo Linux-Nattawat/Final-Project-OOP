@@ -23,7 +23,7 @@ public class GamePanel extends JPanel {
         try {
             bgImage = new ImageIcon(getClass().getResource("/img/GamePanel_Background.jpg")).getImage();
         } catch (Exception e) {
-            System.out.println("Could not load Background.png, using fallback gradient.");
+            System.out.println("cannot load Background.png, use basic");
         }
 
         setLayout(new BorderLayout(20, 20));
