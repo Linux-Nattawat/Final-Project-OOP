@@ -23,6 +23,7 @@ public class ClientHandler implements Runnable {
                 String[] parts = message.split("\\|");
                 String command = parts[0];
 
+
                 if (command.equals("JOIN")) {
                     String name = parts[1];
                     this.player = new Player(name);

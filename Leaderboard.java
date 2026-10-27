@@ -38,7 +38,6 @@ public class Leaderboard extends JPanel implements ActionListener {
         add(bottom, BorderLayout.SOUTH);
         mainMenuButton.addActionListener(e -> {
             mainFrame.resetToMainMenu();
-            mainFrame.switchScreen(new MainMenu(mainFrame));
         });
 
         updateScores(scoreData);
@@ -97,15 +96,6 @@ public class Leaderboard extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (bgImage != null) {
             g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
-        } else {
-            Graphics2D g2d = (Graphics2D) g;
-            GradientPaint gp = new GradientPaint(0, 0, new Color(200, 220, 240), 0, getHeight(),
-                    new Color(150, 180, 220));
-            g2d.setPaint(gp);
-            g2d.fillRect(0, 0, getWidth(), getHeight());
-        }
     }
-
 }

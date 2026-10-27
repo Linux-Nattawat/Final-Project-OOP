@@ -7,13 +7,6 @@ public class Word {
         this.difficulty = difficulty;
     }
 
-    public boolean isCorrect(String userInput) {
-        if (userInput == null) {
-            return false;
-        }
-        return this.text.trim().equalsIgnoreCase(userInput.trim());
-    }
-
     public String getText() {
         return text;
     }

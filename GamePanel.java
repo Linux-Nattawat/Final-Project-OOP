@@ -46,7 +46,6 @@ public class GamePanel extends JPanel {
 
     private void TopPanel() {
         JPanel topPanel = new JPanel(new BorderLayout());
-        // topPanel.setOpaque(false);
 
         miniLeaderboard = new JLabel("<html><b>Leaderboard</b><br>Waiting...</html>");
         miniLeaderboard.setFont(new Font("SansSerif", Font.PLAIN, 16));
@@ -67,7 +66,6 @@ public class GamePanel extends JPanel {
 
     private void CenterPanel() {
         JPanel centerPanel = new JPanel(new GridBagLayout());
-        // centerPanel.setOpaque(false);
 
         targetWord = new JLabel("", SwingConstants.CENTER);
         targetWord.setFont(new Font("SansSerif", Font.BOLD, 56));
@@ -162,20 +160,12 @@ public class GamePanel extends JPanel {
         this.latestScoreData = scoreData;
         String formatted = scoreData.replace(",", "<br>").replace(":", " : ");
         miniLeaderboard.setText("<html><b>Leaderboard</b><br>" + formatted + "</html>");
+
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        if (bgImage != null) {
             g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
-        } else {
-            Graphics2D g2d = (Graphics2D) g;
-            GradientPaint gp = new GradientPaint(0, 0, new Color(245, 247, 250), 0, getHeight(),
-                    new Color(195, 207, 226));
-            g2d.setPaint(gp);
-            g2d.fillRect(0, 0, getWidth(), getHeight());
-        }
     }
 }

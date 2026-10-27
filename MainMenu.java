@@ -119,7 +119,7 @@ public class MainMenu extends JPanel {
             }
 
             mainFrame.setCurrentServerIp(ip);
-            boolean connected = mainFrame.getNetworkManager().connect("127.0.0.1", 12345, name);
+            boolean connected = mainFrame.getNetworkManager().connect(ip, 12345, name);
             if (connected) {
                 mainFrame.switchScreen(new Lobby(mainFrame, ip));
             } else {
@@ -132,15 +132,6 @@ public class MainMenu extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        if (bgImage != null) {
             g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
-        } else {
-            Graphics2D g2d = (Graphics2D) g;
-            GradientPaint gp = new GradientPaint(0, 0, new Color(245, 247, 250), 0, getHeight(),
-                    new Color(195, 207, 226));
-            g2d.setPaint(gp);
-            g2d.fillRect(0, 0, getWidth(), getHeight());
-        }
     }
 }

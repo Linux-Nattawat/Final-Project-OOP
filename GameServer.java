@@ -112,6 +112,7 @@ public class GameServer {
                 first = false;
             }
         }
+
         broadcast(sb.toString());
     }
 

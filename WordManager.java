@@ -84,7 +84,7 @@ public class WordManager {
         veryHardList.add(new Word("infrastructure",4));
         veryHardList.add(new Word("containerization",4));
         veryHardList.add(new Word("internationalization",4));
-
+        
         Collections.shuffle(easyList);
         Collections.shuffle(mediumList);
         Collections.shuffle(hardList);
